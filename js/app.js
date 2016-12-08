@@ -14,6 +14,7 @@ class Board extends React.Component {
     super(); //used to invoke parent functions (would call constructor of React Component)
     this.state = {
       squares: Array(9).fill(null),
+      xIsNext: true
     };
   }
 
@@ -22,8 +23,13 @@ class Board extends React.Component {
     //"handleXYZ" while the smaller component uses "onXYZ"
     //Here, we're handling a click for the square
     const squares = this.state.squares.slice();
-    squares[i] = "X";
-    this.setState({squares: squares});
+    if (calculateWinner(squares) || squares[i]){
+      return;
+    }
+    squares[i] = this.state.xIsNext ? "X" : "O";
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext});
   }
 
   renderSquare(i) {
@@ -32,7 +38,13 @@ class Board extends React.Component {
     return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />;
   }
   render() {
-    const status = 'Next player: X';
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if(winner){
+      status = "Winner: " + winner;
+    } else {
+      status = "Next Player: " + (this.state.xIsNext ? "X" : "O")
+    }
     // Notice how the Squares are being included. Unlike Angular, React
     // uses single braces to bind data. This is an early sight of the
     // one-way data binding React is known for.
