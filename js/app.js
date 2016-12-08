@@ -1,23 +1,35 @@
 // Creates the individual squares in the board
-class Square extends React.Component {
-  render() {
-    // The render method is the core feature of React. It will deliver
-    // components of html, with "props" - additional data or behavior to
-    // use in your app.
+function Square(props){
     return (
-      <button className="square">
-        {/* TODO */}
+      <button className="square" onClick={() => props.onClick()}>
+        {props.value}
       </button>
     );
-  }
 }
+
 
 // Header with game information above 3x3 grid
 class Board extends React.Component {
+  constructor() {
+    super(); //used to invoke parent functions (would call constructor of React Component)
+    this.state = {
+      squares: Array(9).fill(null),
+    };
+  }
+
+  handleClick(i){
+    //Convention to name stateful container's functions
+    //"handleXYZ" while the smaller component uses "onXYZ"
+    //Here, we're handling a click for the square
+    const squares = this.state.squares.slice();
+    squares[i] = "X";
+    this.setState({squares: squares});
+  }
+
   renderSquare(i) {
     // this component now has a method, renderSquare
     // its a function to create a square (unnecessary step, for now…)
-    return <Square />;
+    return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />;
   }
   render() {
     const status = 'Next player: X';
